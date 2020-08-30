@@ -1,10 +1,14 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_expenses_app/widgets/transaction_list.dart';
-import './widgets/new_transaction.dart';
-import './models/transaction.dart';
-import 'package:uuid/uuid.dart';
-import './widgets/chart.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_expenses_app/widgets/transaction_list.dart';
+import 'package:uuid/uuid.dart';
+
+import './models/transaction.dart';
+import './widgets/chart.dart';
+import './widgets/new_transaction.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -110,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(
+    final appBarAndroid = AppBar(
       title: Text(
         'Expenses app',
         style: TextStyle(
@@ -124,12 +128,28 @@ class _MyHomePageState extends State<MyHomePage> {
         )
       ],
     );
+
+    final appBarCupertino = CupertinoNavigationBar(
+      middle: Text(
+        'Expenses app',
+        style: TextStyle(
+          fontFamily: 'OpenSans',
+        ),
+      ),
+      trailing: GestureDetector(
+        child: Icon(CupertinoIcons.add),
+        onTap: () => _startAddNewTransaction(context),
+      ),
+    );
+
     final heightAvailableForWidgets = MediaQuery.of(context).size.height -
-        appBar.preferredSize.height -
+        (Platform.isIOS
+            ? appBarCupertino.preferredSize.height
+            : appBarAndroid.preferredSize.height) -
         MediaQuery.of(context).padding.top;
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
+
+    final pageBody = SafeArea(
+      child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             Container(
@@ -143,10 +163,22 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _startAddNewTransaction(context),
-      ),
     );
+
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            child: pageBody,
+            navigationBar: appBarCupertino,
+          )
+        : Scaffold(
+            appBar: appBarAndroid,
+            body: pageBody,
+            floatingActionButton: Platform.isIOS
+                ? Container()
+                : FloatingActionButton(
+                    child: Icon(Icons.add),
+                    onPressed: () => _startAddNewTransaction(context),
+                  ),
+          );
   }
 }

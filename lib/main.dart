@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // ),
     // Transaction(
     //   id: '2',
-    //   title: 'Toesk',
+    //   title: 'Toes',
     //   amount: 9.55,
     //   datetime: DateTime.now(),
     // )
@@ -109,7 +109,8 @@ class _MyHomePageState extends State<MyHomePage> {
             onTap: () {},
             behavior: HitTestBehavior.opaque,
           );
-        });
+        },
+        );
   }
 
   @override
@@ -174,7 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
             appBar: appBarAndroid,
             body: pageBody,
             floatingActionButton: Platform.isIOS
-                ? Container()
+                ? null
                 : FloatingActionButton(
                     child: Icon(Icons.add),
                     onPressed: () => _startAddNewTransaction(context),

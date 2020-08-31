@@ -15,6 +15,7 @@ class AdaptiveButton extends StatelessWidget {
         ? CupertinoButton(
             child: Text(
               text,
+              textAlign: TextAlign.start,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),

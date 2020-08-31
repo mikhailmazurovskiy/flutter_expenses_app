@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import './adaptive_flat_button.dart';
+import 'adaptive_button.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function appendTransactions;
@@ -52,44 +52,91 @@ class _NewTransactionState extends State<NewTransaction> {
     return Card(
       elevation: 5,
       child: Container(
-          padding: EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              TextField(
-                decoration: InputDecoration(labelText: 'Title'),
-                controller: _titleController,
-                onSubmitted: (_) => _submitData(),
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Amount'),
-                controller: _amountController,
-                keyboardType: TextInputType.number,
-                onSubmitted: (_) => _submitData(),
-              ),
-              Container(
-                height: 70,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _enteredDate == null
-                            ? 'No date chosen'
-                            : 'Picked date: ${DateFormat.yMMMd().format(_enteredDate)}',
-                      ),
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: 10, bottom: 25),
+              child: Row(
+                children: [
+                  Text(
+                    'New Transaction',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                    AdaptiveButton('Choose date', _displayDatePicker),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              RaisedButton(
-                child: Text('Add transaction'),
+            ),
+            Platform.isIOS
+                ? Column(
+                    children: [
+                      CupertinoTextField(
+                        placeholder: 'Title',
+                        controller: _titleController,
+                        onSubmitted: (_) => _submitData(),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      CupertinoTextField(
+                        placeholder: 'Amount',
+                        keyboardType: TextInputType.number,
+                        controller: _amountController,
+                        onSubmitted: (_) => _submitData(),
+                      )
+                    ],
+                  )
+                : Column(
+                    children: [
+                      TextField(
+                        decoration: InputDecoration(labelText: 'Title'),
+                        controller: _titleController,
+                        onSubmitted: (_) => _submitData(),
+                      ),
+                      TextField(
+                        decoration: InputDecoration(labelText: 'Amount'),
+                        controller: _amountController,
+                        keyboardType: TextInputType.number,
+                        onSubmitted: (_) => _submitData(),
+                      ),
+                    ],
+                  ),
+            Container(
+              height: 70,
+              child: Row(
+                children: [
+                  AdaptiveButton('Choose date', _displayDatePicker),
+                  Expanded(
+                    child: Text(
+                      _enteredDate == null
+                          ? 'No date chosen'
+                          : 'Picked date: ${DateFormat.yMMMd().format(_enteredDate)}',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 40,
+              width: MediaQuery.of(context).size.width * 0.95,
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Text(
+                  'Add transaction',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
                 onPressed: _submitData,
                 color: Theme.of(context).primaryColor,
                 textColor: Theme.of(context).textTheme.button.color,
               ),
-            ],
-          )),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
